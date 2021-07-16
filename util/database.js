@@ -1,70 +1,79 @@
-const mysql = require("mysql2");
-require("dotenv").config()
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
-})
-
-function excute(query, data){
-    connection.query(
-        query,
-        data,
-        function(err, results, fields) {
-          console.log(results); // results contains rows returned by server
-        }
-      );
+async function getConn(){
+    return await mysql.createConnection({ 
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE
+    });
 }
 
-function getUserList(){
-    connection.query(
-        'SELECT * FROM `MVC_test`.`Users`',
-        function(err, results, fields) {
-          console.log(results); // results contains rows returned by server
-          console.log(fields); // fields contains extra meta data about results, if available
-        }
-      );
+
+async function getUserList(){
+    const connection = await getConn();
+    let [rows] = await connection.query("SELECT * FROM `MVC_test`.`Users`");
+    return rows;
 }
 
-function insertUser(id, age, name){
-  connection.query(
-    "INSERT INTO `MVC_test`.`Users` (`id`, `age`, `name`) VALUES (?, ?, ?)",
-    [id, age, name],
-    function(err, results, fields){
-
+async function insertUser(id, age, name){
+    const connection = await getConn();
+    let result = await connection.query(
+        "INSERT INTO `MVC_test`.`Users` (`id`, `age`, `name`) VALUES (?, ?, ?)",
+        [id, age, name]
+    )
+        .catch((err)=>{
+            console.log(err);
+        });
+    if(result !== undefined){
+        return true;
     }
-  )
+    else{
+        return false;
+    }
 }
 
-function deleteUser(id){
-  connection.query(
-    "DELETE FROM `MVC_test`.`Users` WHERE (`id` = ?)",
-    id,
-    function(err, results, fields){
-
+async function deleteUser(id){
+    const connection = await getConn();
+    let result = await connection.query(
+        "DELETE FROM `MVC_test`.`Users` WHERE (`id` = ?)",
+        id,
+    )
+        .catch((err)=>{
+            console.log(err);
+        });
+    if(result !== undefined){
+        return true;
     }
-  )
+    else{
+        return false;
+    }
 }
 
-function patchUser(id, age){
-  connection.query(
-    "UPDATE `MVC_test`.`Users` SET `age` = ? WHERE (`id` = ?);",
-    [age, id],
-    function(err, results, fields){
-      
+async function patchUser(id, age){
+    const connection = await getConn();
+    let result = await connection.query(
+        "UPDATE `MVC_test`.`Users` SET `age` = ? WHERE (`id` = ?);",
+        [age, id],
+    )
+        .catch((err)=>{
+            console.log(err);
+        });
+    if(result !== undefined){
+        return true;
     }
-  )
+    else{
+        return false;
+    }
 }
 
 module.exports = {
-    excute: excute,
     getUserList: getUserList,
     insertUser: insertUser,
     deleteUser: deleteUser,
     patchUser: patchUser
 
-}
+};
 

@@ -1,27 +1,33 @@
-const userList = [];
+const db = require("../util/database");
+// const userList = [];
 
-function getUserList(){
-	return userList;
+async function getUserList(){
+    return await db.getUserList();
 }
 
-function insertUser(name, age){
-	userList.push({"name": name, "age": age});
+async function insertUser(id, age, name){
+    // userList.push({"name": name, "age": age});
+    return await db.insertUser(id, age, name);
+    
 }
 
-function deleteUser(name){
-	const userIdx = userList.findIndex((user)=>name === user.name);
-	userList.splice(userIdx, 1);
+async function deleteUser(id){
+    // const userIdx = userList.findIndex((user)=>name === user.name);
+    // userList.splice(userIdx, 1);
+    return await db.deleteUser(id);
+
 }
 
-function patchUser(name, age){
-	const userIdx = userList.findIndex((user)=>name === user.name);
-	userList[userIdx].age = age;
+async function patchUser(id, age){
+//     const userIdx = userList.findIndex((user)=>name === user.name);
+//     userList[userIdx].age = age;
+    return await db.patchUser(id, age);
 }
 
 
 module.exports = {
-	getUserList: getUserList,
-	insertUser: insertUser,
-	patchUser: patchUser,
-	deleteUser: deleteUser
+    getUserList: getUserList,
+    insertUser: insertUser,
+    patchUser: patchUser,
+    deleteUser: deleteUser
 };
