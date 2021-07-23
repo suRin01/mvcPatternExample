@@ -11,6 +11,14 @@ const pool = mysql.createPool({
     connectionLimit: 5
 });
 
+async function getConnection(){
+    return await pool.getConnection(async conn => conn)
+    .catch((err)=>{
+        console.log(err);
+        return undefined;
+    })
+}
+
 
 async function getUserList(){
     const connection = await pool.getConnection(async conn => conn)
@@ -18,7 +26,7 @@ async function getUserList(){
         .catch((err)=>{
             console.log(err);
             connection.release();
-            return [];
+            return false;
         })
         connection.release();
     return rows;
@@ -82,10 +90,7 @@ async function patchUser(id, age){
 }
 
 module.exports = {
-    getUserList: getUserList,
-    insertUser: insertUser,
-    deleteUser: deleteUser,
-    patchUser: patchUser
+    getConnection: getConnection
 
 };
 
