@@ -7,13 +7,7 @@ const userService = require("../service/userService");
 router.get("/getuser", async (req, res) => {
     const result = await userService.getUserList();
     console.log(result);
-    if(result !== false){
-        res.send(result);
-    }
-    else{
-        res.statusCode(402);
-        res.send("input error");
-    }
+    res.json(result);
 });
 
 router.post("/postuser", async (req, res) => {
@@ -25,16 +19,16 @@ router.post("/postuser", async (req, res) => {
     const result = await userService.insertUser(id, age, name);
 
     console.log(userService.getUserList());
-    res.send("Hello postuser!");
+    res.json(result);
 });
 
 router.delete("/deleteuser", async (req, res) => {
     const id = req.body.id;
 
-    userService.deleteUser(id);
+    const result = await userService.deleteUser(id);
 
     console.log(userService.getUserList());
-    res.send("Hello deleteuser!");
+    res.json(result);
 });
 
 router.put("/patchuser", async (req, res) => {
@@ -44,7 +38,8 @@ router.put("/patchuser", async (req, res) => {
     
 
     console.log(userService.getUserList());
-    res.send(await userService.patchUser(id, age));
+    const result = await userService.patchUser(id, age);
+    res.json(result);
 });
 //patch와 put의 차이점-> 부분이냐, 전체냐
 
