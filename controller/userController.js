@@ -6,12 +6,12 @@ const userService = require("../service/userService");
 
 router.get("/getuser", async (req, res) => {
     const result = await userService.getUserList();
+
     console.log(result);
     res.json(result);
 });
 
 router.post("/postuser", async (req, res) => {
-    console.log(req.body);
     const name = req.body.name;
     const age = req.body.age;
     const id = req.body.id;
@@ -35,12 +35,9 @@ router.put("/patchuser", async (req, res) => {
     const id = req.body.id;
     const age = req.body.age;
 
-    
-
     console.log(userService.getUserList());
     const result = await userService.patchUser(id, age);
     res.json(result);
 });
-//patch와 put의 차이점-> 부분이냐, 전체냐
 
 module.exports = router;
